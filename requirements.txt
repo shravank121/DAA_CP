@@ -5,3 +5,6 @@
 # Uncomment and install if you want to use visualization.py
 # networkx>=2.5
 # matplotlib>=3.3.0
+
+# Optional test dependency
+# pytest>=7.0

@@ -110,7 +110,7 @@ class DistributedStorageSimulator:
             )
             
             for file_id, from_node, to_node in migrations:
-                self.log_event(f"Migrated {file_id}: Node {from_node} → Node {to_node}")
+                self.log_event(f"Migrated {file_id}: Node {from_node} -> Node {to_node}")
         
         # Step 3: Simulate node failures
         failed_nodes = simulate_node_failures(self.nodes)

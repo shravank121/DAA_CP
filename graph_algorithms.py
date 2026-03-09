@@ -92,6 +92,9 @@ class NetworkGraph:
                     previous[neighbor_id] = current_id
                     heapq.heappush(heap, (new_dist, neighbor_id))
         
+        if distances[target_id] == float('inf'):
+            return float('inf'), []
+
         # Reconstruct path
         path = []
         current = target_id
@@ -275,8 +278,12 @@ def select_replicas_with_topology(nodes, file, num_replicas, graph):
                 dist, _ = graph.dijkstra_shortest_path(node_id, selected_id)
                 min_dist = min(min_dist, dist)
             
-            # Combined score: balance quality and diversity
-            combined_score = score + 0.1 * min_dist
+            # Prefer reachable candidates; disconnected candidates are deprioritized.
+            if min_dist == float('inf'):
+                combined_score = -float('inf')
+            else:
+                # Combined score: balance quality and diversity
+                combined_score = score + 0.1 * min_dist
             
             if combined_score > best_score:
                 best_score = combined_score

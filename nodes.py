@@ -27,7 +27,9 @@ class Node:
         
     def add_file(self, file_id, file_size):
         """Add a file to this node"""
-        if self.status == "alive" and file_id not in self.stored_files:
+        if (self.status == "alive" and
+                file_id not in self.stored_files and
+                self.has_capacity(file_size)):
             self.stored_files.append(file_id)
             self.current_load += file_size / self.storage_capacity
             return True

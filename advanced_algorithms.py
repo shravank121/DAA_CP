@@ -46,7 +46,7 @@ def knapsack_replica_placement(nodes, files, total_capacity):
             continue
         
         n = len(files)
-        W = int(node.storage_capacity)
+        W = int(min(node.storage_capacity, total_capacity))
         
         # DP table: dp[i][w] = (max_importance, selected_files)
         dp = [[0] * (W + 1) for _ in range(n + 1)]
@@ -175,14 +175,6 @@ def branch_and_bound_optimal_placement(nodes, files, max_cost):
         'cost': 0
     }
     
-    def calculate_placement_cost(placement):
-        """Calculate total cost of placement"""
-        cost = 0
-        for node_id, file_ids in placement.items():
-            node = next(n for n in nodes if n.id == node_id)
-            cost += len(file_ids) * (1 - node.reliability)  # Cost based on unreliability
-        return cost
-    
     def calculate_placement_availability(placement, file):
         """Calculate availability for a file given placement"""
         if file.id not in [fid for fids in placement.values() for fid in fids]:
@@ -211,7 +203,7 @@ def branch_and_bound_optimal_placement(nodes, files, max_cost):
             # Update best solution if better
             if total_avail > best_solution['availability']:
                 best_solution = {
-                    'placement': dict(current_placement),
+                    'placement': {nid: list(fids) for nid, fids in current_placement.items()},
                     'availability': total_avail,
                     'cost': current_cost
                 }
@@ -236,12 +228,15 @@ def branch_and_bound_optimal_placement(nodes, files, max_cost):
             if node.id not in current_placement:
                 current_placement[node.id] = []
             current_placement[node.id].append(file.id)
+            node.current_load += file.size / node.storage_capacity
             
             # Recurse
             branch_and_bound_recursive(file_idx + 1, current_placement, new_cost)
             
             # Backtrack
             current_placement[node.id].remove(file.id)
+            node.current_load -= file.size / node.storage_capacity
+            node.current_load = max(0.0, node.current_load)
             if not current_placement[node.id]:
                 del current_placement[node.id]
     

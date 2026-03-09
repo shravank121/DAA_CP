@@ -83,7 +83,7 @@ def test_dynamic_programming():
     print("DP STATE DEFINITION:")
     print("  dp[k] = availability with k best nodes")
     print("\nRECURRENCE RELATION:")
-    print("  dp[k] = 1 - ∏(failure_prob[i]) for i = 0 to k-1")
+    print("  dp[k] = 1 - PRODUCT(failure_prob[i]) for i = 0 to k-1")
     print("\nOPTIMAL SUBSTRUCTURE:")
     print("  Optimal k replicas = Best node + Optimal (k-1) replicas\n")
     
@@ -154,7 +154,7 @@ def test_graph_algorithms():
     distance, path = graph.dijkstra_shortest_path(0, 4)
     
     print(f"\nGREEDY STRATEGY: Always expand node with minimum distance")
-    print(f"\nShortest path: {' → '.join(map(str, path))}")
+    print(f"\nShortest path: {' -> '.join(map(str, path))}")
     print(f"Total distance: {distance}ms")
     
     print(f"\nTime Complexity: O(E log V) with min-heap")
@@ -206,8 +206,8 @@ def test_divide_and_conquer():
     print("\nMASTER THEOREM:")
     print("  a=2, b=2, f(n)=O(n)")
     print("  n^(log_b(a)) = n^1 = n")
-    print("  f(n) = Θ(n) → Case 2")
-    print("  Therefore: T(n) = Θ(n log n)")
+    print("  f(n) = Theta(n) -> Case 2")
+    print("  Therefore: T(n) = Theta(n log n)")
     
     # Perform load balancing
     balanced = divide_and_conquer_load_balance(nodes, files)
@@ -273,8 +273,8 @@ def test_knapsack_dp():
     print(f"\nTotal size: {total_size}GB / {nodes[0].storage_capacity}GB")
     print(f"Total importance: {total_importance}")
     
-    print(f"\nTime Complexity: O(n × W) where W = capacity")
-    print(f"Space Complexity: O(n × W)")
+    print(f"\nTime Complexity: O(n * W) where W = capacity")
+    print(f"Space Complexity: O(n * W)")
 
 def test_algorithm_comparison():
     """
@@ -288,7 +288,7 @@ def test_algorithm_comparison():
     print("| Paradigm          | Time         | Space    | Optimal? | Use Case |")
     print("-" * 70)
     print("| Greedy            | O(N log N)   | O(N)     | Yes*     | Fast selection |")
-    print("| Dynamic Prog      | O(N×W)       | O(N×W)   | Yes      | Optimization |")
+    print("| Dynamic Prog      | O(N*W)       | O(N*W)   | Yes      | Optimization |")
     print("| Divide & Conquer  | O(N log N)   | O(log N) | Approx   | Decomposition |")
     print("| Graph (Dijkstra)  | O(E log V)   | O(V)     | Yes      | Shortest path |")
     print("| Graph (Prim)      | O(E log V)   | O(V)     | Yes      | MST |")
@@ -324,11 +324,11 @@ def main():
     print("ALL DAA CONCEPT TESTS COMPLETE")
     print("="*70)
     print("\nKey Takeaways:")
-    print("  ✓ Greedy algorithms make locally optimal choices")
-    print("  ✓ Dynamic programming solves overlapping subproblems")
-    print("  ✓ Graph algorithms handle network topology")
-    print("  ✓ Divide and conquer recursively decomposes problems")
-    print("  ✓ Each paradigm has specific use cases and trade-offs")
+    print("  [OK] Greedy algorithms make locally optimal choices")
+    print("  [OK] Dynamic programming solves overlapping subproblems")
+    print("  [OK] Graph algorithms handle network topology")
+    print("  [OK] Divide and conquer recursively decomposes problems")
+    print("  [OK] Each paradigm has specific use cases and trade-offs")
     print("="*70 + "\n")
 
 if __name__ == "__main__":
