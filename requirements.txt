@@ -1,0 +1,7 @@
+# Core simulation - no dependencies required
+# Python 3.6+ standard library only
+
+# Optional visualization dependencies
+# Uncomment and install if you want to use visualization.py
+# networkx>=2.5
+# matplotlib>=3.3.0
