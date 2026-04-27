@@ -12,7 +12,7 @@ from failure_simulation import simulate_node_failures, cleanup_failed_node_repli
 from availability import calculate_system_availability, get_availability_report
 
 class DistributedStorageSimulator:
-    def __init__(self, num_nodes=10, num_files=5, risk_threshold=0.6):
+    def __init__(self, num_nodes=10, num_files=5, risk_threshold=0.6, target_availability=0.99):
         """
         Initialize the distributed storage simulator
         
@@ -20,10 +20,12 @@ class DistributedStorageSimulator:
             num_nodes: Number of nodes in the cluster
             num_files: Number of files to store
             risk_threshold: Threshold for identifying high-risk nodes
+            target_availability: Target system availability (default 99%)
         """
         self.nodes = []
         self.files = []
         self.risk_threshold = risk_threshold
+        self.target_availability = target_availability
         self.time_step = 0
         self.events = []
         
@@ -124,7 +126,7 @@ class DistributedStorageSimulator:
         if removed > 0:
             self.log_event(f"Removed {removed} replicas from failed nodes")
         
-        # Step 5: Maintain minimum replicas
+        # Step 5: Maintain minimum replicas (dynamically calculated)
         self._maintain_replicas()
         
         # Step 6: Calculate and report availability
@@ -137,10 +139,17 @@ class DistributedStorageSimulator:
             if avail < 0.99:  # Only report files with low availability
                 self.log_event(f"  {file_id} availability: {avail * 100:.2f}%")
     
-    def _maintain_replicas(self, min_replicas=3):
+    def _maintain_replicas(self):
         """
-        Ensure all files maintain minimum replica count
+        Ensure all files maintain minimum replica count (dynamically calculated)
         """
+        # Calculate current minimum replicas needed for target availability
+        min_replicas, actual_availability = calculate_minimum_replicas(
+            self.nodes, self.target_availability
+        )
+        
+        self.log_event(f"Dynamic replica calculation: need {min_replicas} replicas for {self.target_availability*100:.1f}% availability")
+        
         for file in self.files:
             current_replicas = file.get_replica_count()
             
@@ -154,6 +163,11 @@ class DistributedStorageSimulator:
                     if node.add_file(file.id, file.size):
                         file.add_replica(node_id)
                         self.log_event(f"Created replica of {file.id} on Node {node_id}")
+            elif current_replicas > min_replicas + 1:  # Allow some buffer, remove excess if too many
+                # Remove excess replicas to save resources (optional optimization)
+                excess = current_replicas - min_replicas
+                # For now, we'll keep extra replicas for safety
+                pass
     
     def log_event(self, message):
         """Log simulation event"""
