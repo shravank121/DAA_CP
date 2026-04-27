@@ -137,7 +137,7 @@ def calculate_minimum_replicas(nodes, target_availability=0.999):
         target_availability: Required availability level (default 0.999)
     
     Returns:
-        int: Minimum number of replicas needed
+        tuple: (minimum_replicas, actual_availability)
     """
     # Step 1: Sort nodes by failure probability (ascending) - O(N log N)
     # GREEDY CHOICE: Select nodes with lowest failure probability
@@ -145,7 +145,7 @@ def calculate_minimum_replicas(nodes, target_availability=0.999):
                          key=lambda x: x.failure_probability)
     
     if not sorted_nodes:
-        return 0
+        return 0, 0.0
     
     # Step 2: Dynamic Programming - build up solution iteratively
     # dp[k] = availability with k best nodes
@@ -161,11 +161,13 @@ def calculate_minimum_replicas(nodes, target_availability=0.999):
         
         # Check if target reached
         if availability >= target_availability:
-            return num_replicas
+            return num_replicas, availability
         
         num_replicas += 1
     
-    return len(sorted_nodes)  # Use all available nodes
+    # If we reach here, use all available nodes
+    final_availability = 1 - failure_product
+    return len(sorted_nodes), final_availability
 
 def migrate_replicas_from_risky_nodes(nodes, files, high_risk_node_ids):
     """
